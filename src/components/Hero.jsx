@@ -24,12 +24,17 @@ export default function Hero({ onOpenCheckout }) {
     const audio = audioRef.current;
     if (!audio) return;
 
+    audio.volume = 1.0;
+    audio.muted = false;
+
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onLoadedMetadata = () => {
       if (audio.duration && !isNaN(audio.duration)) {
         setDuration(audio.duration);
       }
     };
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
     const onEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
@@ -37,49 +42,60 @@ export default function Hero({ onOpenCheckout }) {
 
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('play', onPlay);
+    audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
 
-    // Fonction pour tenter de lancer la lecture automatique
-    const attemptAutoplay = () => {
+    let cleanedUp = false;
+
+    const cleanupListeners = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      document.removeEventListener('pointerdown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+      document.removeEventListener('touchend', handleFirstInteraction);
+      document.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    const handleFirstInteraction = () => {
       if (!audio) return;
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch(() => {
-            // Si la politique du navigateur bloque l'autoplay non sollicité,
-            // on déclenche automatiquement dès la première interaction (clic, toucher, défilement)
-            const handleFirstUserAction = () => {
-              if (audio && audio.paused) {
-                audio.play()
-                  .then(() => setIsPlaying(true))
-                  .catch(() => {});
-              }
-              cleanupListeners();
-            };
-
-            const cleanupListeners = () => {
-              window.removeEventListener('click', handleFirstUserAction);
-              window.removeEventListener('touchstart', handleFirstUserAction);
-              window.removeEventListener('scroll', handleFirstUserAction);
-              window.removeEventListener('keydown', handleFirstUserAction);
-            };
-
-            window.addEventListener('click', handleFirstUserAction, { once: true, passive: true });
-            window.addEventListener('touchstart', handleFirstUserAction, { once: true, passive: true });
-            window.addEventListener('scroll', handleFirstUserAction, { once: true, passive: true });
-            window.addEventListener('keydown', handleFirstUserAction, { once: true, passive: true });
-          });
+      audio.muted = false;
+      const p = audio.play();
+      if (p !== undefined) {
+        p.then(() => {
+          setIsPlaying(true);
+          cleanupListeners();
+        }).catch((err) => {
+          console.warn("Attente d'une interaction utilisateur autorisée:", err);
+        });
       }
     };
 
-    attemptAutoplay();
+    // 1. Tenter la lecture automatique immédiate (fonctionne directement si autorisé par le navigateur)
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          // 2. Si la politique stricte du navigateur bloque l'autoplay sans geste (Chrome/Safari mobile),
+          // on écoute les premiers gestes physiques de l'utilisateur (toucher, clic, touche clavier)
+          document.addEventListener('pointerdown', handleFirstInteraction, { passive: true });
+          document.addEventListener('touchstart', handleFirstInteraction, { passive: true });
+          document.addEventListener('touchend', handleFirstInteraction, { passive: true });
+          document.addEventListener('click', handleFirstInteraction, { passive: true });
+          window.addEventListener('keydown', handleFirstInteraction, { passive: true });
+        });
+    }
 
     return () => {
+      cleanupListeners();
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
     };
   }, []);
