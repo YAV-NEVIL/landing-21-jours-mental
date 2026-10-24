@@ -117,7 +117,7 @@ export default function Hero({ onOpenCheckout }) {
   return (
     <section className="hero-section" id="hero" style={{ position: 'relative', overflow: 'hidden' }}>
       {/* Vrai élément audio HTML5 */}
-      <audio ref={audioRef} src="/audio/extrait-jour-1.mp3" preload="metadata" />
+      <audio ref={audioRef} src="./audio/extrait-jour-1.mp3" preload="metadata" />
 
       <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
         <div className="hero-grid" style={{ alignItems: 'center' }}>
@@ -343,9 +343,9 @@ export default function Hero({ onOpenCheckout }) {
                     {/* Couverture face avant */}
                     <div className="book-cover-front">
                       <img 
-                        src="/couverture-haute-definition.jpg" 
+                        src="./couverture-haute-definition.jpg" 
                         alt="Couverture Officielle Haute Résolution - 21 Jours pour Reprogrammer ton Mental Entrepreneurial"
-                        onError={(e) => { e.currentTarget.src = '/mockup-3d.png'; }}
+                        onError={(e) => { e.currentTarget.src = './mockup-3d.png'; }}
                       />
                       <div className="book-cover-gloss"></div>
                     </div>
@@ -358,10 +358,10 @@ export default function Hero({ onOpenCheckout }) {
                 {activeTab === 'cover' && (
                   <div style={{ width: '100%', maxWidth: '350px', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.85)', border: '1px solid rgba(95, 212, 255, 0.4)' }}>
                     <img 
-                      src="/couverture-haute-definition.jpg" 
+                      src="./couverture-haute-definition.jpg" 
                       alt="Couverture Pleine Page Haute Définition"
                       style={{ width: '100%', display: 'block', objectFit: 'contain' }}
-                      onError={(e) => { e.currentTarget.src = '/mockup-3d.png'; }}
+                      onError={(e) => { e.currentTarget.src = './mockup-3d.png'; }}
                     />
                   </div>
                 )}
@@ -369,10 +369,10 @@ export default function Hero({ onOpenCheckout }) {
                 {activeTab === 'bundle' && (
                   <div style={{ width: '100%', borderRadius: '18px', overflow: 'hidden', textAlign: 'center' }}>
                     <img 
-                      src="/mockup-3d.png" 
+                      src="./mockup-3d.png" 
                       alt="Mockup 3D Studio Officiel - 21 Jours pour Reprogrammer ton Mental"
                       style={{ width: '100%', maxHeight: '430px', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.85))' }}
-                      onError={(e) => { e.currentTarget.src = '/couverture-haute-definition.jpg'; }}
+                      onError={(e) => { e.currentTarget.src = './couverture-haute-definition.jpg'; }}
                     />
                   </div>
                 )}
@@ -449,4 +449,87 @@ export default function Hero({ onOpenCheckout }) {
                 <button
                   type="button"
                   className="modal-tool-btn"
-                  onClick={() => setZoomLevel((z) => Math.max(0.8, z - 0.25))}\r\n                  title=\"Zoomer en arrière\"\r\n                >\r\n                  <ZoomOut size={18} />\r\n                </button>\r\n                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5fd4ff', minWidth: '45px', textAlign: 'center' }}>\r\n                  {Math.round(zoomLevel * 100)}%\r\n                </span>\r\n                <button\r\n                  type=\"button\"\r\n                  className=\"modal-tool-btn\"\r\n                  onClick={() => setZoomLevel((z) => Math.min(2.5, z + 0.25))}\r\n                  title=\"Zoomer en avant\"\r\n                >\r\n                  <ZoomIn size={18} />\r\n                </button>\r\n                <button\r\n                  type=\"button\"\r\n                  className=\"modal-tool-btn\"\r\n                  onClick={() => setZoomLevel(1)}\r\n                  title=\"Réinitialiser le zoom\"\r\n                >\r\n                  <RotateCcw size={16} />\r\n                </button>\r\n              </div>\r\n\r\n              {/* Bouton Fermer */}\r\n              <button\r\n                type=\"button\"\r\n                onClick={() => setIsZoomModalOpen(false)}\r\n                style={{\r\n                  width: '40px',\r\n                  height: '40px',\r\n                  borderRadius: '50%',\r\n                  background: 'rgba(255, 255, 255, 0.08)',\r\n                  border: '1px solid rgba(255, 255, 255, 0.15)',\r\n                  color: '#ffffff',\r\n                  display: 'flex',\r\n                  alignItems: 'center',\r\n                  justifyContent: 'center',\r\n                  cursor: 'pointer'\r\n                }}\r\n                title=\"Fermer (Échap)\"\r\n              >\r\n                <X size={20} />\r\n              </button>\r\n            </div>\r\n          </div>\r\n\r\n          {/* Corps de la modale avec image zoomable */}\r\n          <div className=\"modal-zoom-body\" onClick={(e) => e.stopPropagation()}>\r\n            <img\r\n              src=\"/couverture-haute-definition.jpg\"\r\n              alt=\"Couverture Agrandie Haute Définition\"\r\n              className=\"modal-zoom-image\"\r\n              style={{\r\n                transform: `scale(${zoomLevel})`\r\n              }}\r\n            />\r\n          </div>\r\n\r\n          {/* Footer de la modale avec CTA direct */}\r\n          <div style={{ padding: '16px 30px', background: 'rgba(8, 12, 22, 0.8)', borderTop: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={(e) => e.stopPropagation()}>\r\n            <span style={{ fontSize: '13px', color: '#94a3b8' }}>\r\n              Auteur : <strong>Dani Mariotte</strong> • Édition 2026 • Inclus dans le Pack 3 Formats\r\n            </span>\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => {\r\n                setIsZoomModalOpen(false);\r\n                if (onOpenCheckout) onOpenCheckout();\r\n              }}\r\n              className=\"btn-magnetic\"\r\n              style={{ padding: '10px 24px', fontSize: '13.5px', cursor: 'pointer', border: 'none' }}\r\n            >\r\n              <Download size={16} />\r\n              <span>Commander le Pack Complet (10 000 FCFA)</span>\r\n            </button>\r\n          </div>\r\n        </div>\r\n      )}\r\n    </section>\r\n  );\r\n}\r\n
+                  onClick={() => setZoomLevel((z) => Math.max(0.8, z - 0.25))}
+                  title="Zoomer en arrière"
+                >
+                  <ZoomOut size={18} />
+                </button>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5fd4ff', minWidth: '45px', textAlign: 'center' }}>
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+                <button
+                  type="button"
+                  className="modal-tool-btn"
+                  onClick={() => setZoomLevel((z) => Math.min(2.5, z + 0.25))}
+                  title="Zoomer en avant"
+                >
+                  <ZoomIn size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="modal-tool-btn"
+                  onClick={() => setZoomLevel(1)}
+                  title="Réinitialiser le zoom"
+                >
+                  <RotateCcw size={16} />
+                </button>
+              </div>
+
+              {/* Bouton Fermer */}
+              <button
+                type="button"
+                onClick={() => setIsZoomModalOpen(false)}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+                title="Fermer (Échap)"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Corps de la modale avec image zoomable */}
+          <div className="modal-zoom-body" onClick={(e) => e.stopPropagation()}>
+            <img
+              src="./couverture-haute-definition.jpg"
+              alt="Couverture Agrandie Haute Définition"
+              className="modal-zoom-image"
+              style={{
+                transform: `scale(${zoomLevel})`
+              }}
+            />
+          </div>
+
+          {/* Footer de la modale avec CTA direct */}
+          <div style={{ padding: '16px 30px', background: 'rgba(8, 12, 22, 0.8)', borderTop: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={(e) => e.stopPropagation()}>
+            <span style={{ fontSize: '13px', color: '#94a3b8' }}>
+              Auteur : <strong>Dani Mariotte</strong> • Édition 2026 • Inclus dans le Pack 3 Formats
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setIsZoomModalOpen(false);
+                if (onOpenCheckout) onOpenCheckout();
+              }}
+              className="btn-magnetic"
+              style={{ padding: '10px 24px', fontSize: '13.5px', cursor: 'pointer', border: 'none' }}
+            >
+              <Download size={16} />
+              <span>Commander le Pack Complet (10 000 FCFA)</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
