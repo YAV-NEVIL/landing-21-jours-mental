@@ -19,7 +19,7 @@ export default function Hero({ onOpenCheckout }) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [tiltStyle, setTiltStyle] = useState({});
 
-  // Synchronisation avec l'élément audio HTML5
+  // Synchronisation et Autoplay avec l'élément audio HTML5
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -38,6 +38,44 @@ export default function Hero({ onOpenCheckout }) {
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
     audio.addEventListener('ended', onEnded);
+
+    // Fonction pour tenter de lancer la lecture automatique
+    const attemptAutoplay = () => {
+      if (!audio) return;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch(() => {
+            // Si la politique du navigateur bloque l'autoplay non sollicité,
+            // on déclenche automatiquement dès la première interaction (clic, toucher, défilement)
+            const handleFirstUserAction = () => {
+              if (audio && audio.paused) {
+                audio.play()
+                  .then(() => setIsPlaying(true))
+                  .catch(() => {});
+              }
+              cleanupListeners();
+            };
+
+            const cleanupListeners = () => {
+              window.removeEventListener('click', handleFirstUserAction);
+              window.removeEventListener('touchstart', handleFirstUserAction);
+              window.removeEventListener('scroll', handleFirstUserAction);
+              window.removeEventListener('keydown', handleFirstUserAction);
+            };
+
+            window.addEventListener('click', handleFirstUserAction, { once: true, passive: true });
+            window.addEventListener('touchstart', handleFirstUserAction, { once: true, passive: true });
+            window.addEventListener('scroll', handleFirstUserAction, { once: true, passive: true });
+            window.addEventListener('keydown', handleFirstUserAction, { once: true, passive: true });
+          });
+      }
+    };
+
+    attemptAutoplay();
 
     return () => {
       audio.removeEventListener('timeupdate', onTimeUpdate);
@@ -116,8 +154,8 @@ export default function Hero({ onOpenCheckout }) {
 
   return (
     <section className="hero-section" id="hero" style={{ position: 'relative', overflow: 'hidden' }}>
-      {/* Vrai élément audio HTML5 */}
-      <audio ref={audioRef} src="./audio/extrait-jour-1.mp3" preload="metadata" />
+      {/* Vrai élément audio HTML5 avec AutoPlay */}
+      <audio ref={audioRef} src="./audio/extrait-jour-1.mp3" preload="auto" autoPlay playsInline />
 
       <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
         <div className="hero-grid" style={{ alignItems: 'center' }}>
@@ -182,11 +220,29 @@ export default function Hero({ onOpenCheckout }) {
                ======================================================== */}
             <div className="hero-audio-box">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   <Headphones size={17} color="#5fd4ff" />
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#e6eaf4', fontWeight: 600, letterSpacing: '0.04em' }}>
                     EXTRAIT AUDIO OFFICIEL : JOUR 1
                   </span>
+                  {isPlaying && (
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '2px 8px',
+                      borderRadius: '9999px',
+                      background: 'rgba(95, 212, 255, 0.15)',
+                      border: '1px solid rgba(95, 212, 255, 0.35)',
+                      fontSize: '10px',
+                      color: '#5fd4ff',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 700
+                    }}>
+                      <span className="pulse-dot" style={{ width: '6px', height: '6px', backgroundColor: '#5fd4ff' }}></span>
+                      EN LECTURE
+                    </span>
+                  )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5fd4ff', fontWeight: 700 }}>
