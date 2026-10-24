@@ -71,7 +71,15 @@ export default function CheckoutModal({ isOpen, onClose }) {
 
         {/* Corps de la modale avec Iframe Chariow */}
         <div className="checkout-modal-body">
-          {isLoading && (\r\n            <div className=\"checkout-loader-wrapper\">\r\n              <div className=\"checkout-spinner-box\">\r\n                <Loader2 size={36} className=\"checkout-spinner-icon\" />\r\n                <span className=\"checkout-loader-text\">Chargement de la commande sécurisée...</span>\r\n                <span className=\"checkout-loader-sub\">Connexion à la passerelle officielle Chariow</span>\r\n              </div>\r\n            </div>\r\n          )}
+          {isLoading && (
+            <div className="checkout-loader-wrapper">
+              <div className="checkout-spinner-box">
+                <Loader2 size={36} className="checkout-spinner-icon" />
+                <span className="checkout-loader-text">Chargement de la commande sécurisée...</span>
+                <span className="checkout-loader-sub">Connexion à la passerelle officielle Chariow</span>
+              </div>
+            </div>
+          )}
 
           <iframe
             src={checkoutUrl}

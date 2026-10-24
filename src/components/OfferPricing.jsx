@@ -79,7 +79,20 @@ export default function OfferPricing({ onOpenCheckout }) {
             
             {/* Colonne Gauche : Livrables & Bonus */}
             <div className="offer-deliverables-list">
-              {deliverables.map((item, idx) => (\r\n                <div key={idx} className=\"offer-deliverable-item\">\r\n                  <div className=\"offer-check-icon\">\r\n                    <Check size={16} />\r\n                  </div>\r\n                  <div style={{ flex: 1 }}>\r\n                    <div className=\"offer-item-head\">\r\n                      <span className=\"offer-item-title\">{item.title}</span>\r\n                      <span className=\"offer-item-val\">{item.value}</span>\r\n                    </div>\r\n                    <p className=\"offer-item-desc\">{item.desc}</p>\r\n                  </div>\r\n                </div>\r\n              ))}
+              {deliverables.map((item, idx) => (
+                <div key={idx} className="offer-deliverable-item">
+                  <div className="offer-check-icon">
+                    <Check size={16} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div className="offer-item-head">
+                      <span className="offer-item-title">{item.title}</span>
+                      <span className="offer-item-val">{item.value}</span>
+                    </div>
+                    <p className="offer-item-desc">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Colonne Droite : Mockup 3D Officiel & Bouton de Téléchargement */}
@@ -94,10 +107,10 @@ export default function OfferPricing({ onOpenCheckout }) {
               {/* Rendu 3D Officiel du Livre "21 Jours pour reprogrammer ton mental entrepreneurial" */}
               <div className="offer-mockup-wrapper">
                 <img 
-                  src="/mockup-3d.png" 
+                  src="./mockup-3d.png" 
                   alt="Livre Officiel 21 Jours pour Reprogrammer ton Mental Entrepreneurial - Dani Mariotte"
                   className="offer-mockup-img"
-                  onError={(e) => { e.currentTarget.src = '/couverture-haute-definition.jpg'; }}
+                  onError={(e) => { e.currentTarget.src = './couverture-haute-definition.jpg'; }}
                 />
               </div>
 
